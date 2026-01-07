@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 android {
@@ -56,4 +58,25 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    val voyager = "1.0.1"
+    implementation("cafe.adriel.voyager:voyager-navigator:$voyager")
+    implementation("cafe.adriel.voyager:voyager-tab-navigator:${voyager}")
+    implementation("cafe.adriel.voyager:voyager-bottom-sheet-navigator:${voyager}")
+    implementation("cafe.adriel.voyager:voyager-transitions:${voyager}")
+
+    val koin = "4.1.1"
+    implementation("io.insert-koin:koin-android:$koin")
+    implementation("io.insert-koin:koin-compose:${koin}")
+    implementation("io.insert-koin:koin-androidx-compose:${koin}")
+    implementation("cafe.adriel.voyager:voyager-koin:$voyager")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+
+    val room = "2.8.4"
+    implementation("androidx.room:room-runtime:$room")
+    implementation("androidx.room:room-ktx:$room")
+    ksp("androidx.room:room-compiler:$room")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }
