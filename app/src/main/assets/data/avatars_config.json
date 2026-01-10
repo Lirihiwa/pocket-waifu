@@ -2,11 +2,13 @@
   {
     "avatarName": "короне",
     "description": "виртуальный витубер собачка очень милая в общении",
-    "imagePath": "images/avatarIcons/Inugami_Korone_Portrait.png"
+    "imagePath": "images/avatarIcons/Inugami_Korone_Portrait.png",
+    "prompt": "djghlkshfdg"
   },
   {
     "avatarName": "мику",
     "description": "виртуальная певица крч поет жесть крутые песни и ей будет похер на общении с тобой",
-    "imagePath": "images/avatarIcons/l-y0fEQN_400x400.jpg"
+    "imagePath": "images/avatarIcons/l-y0fEQN_400x400.jpg",
+    "prompt": "djghlkshfdg"
   }
 ]

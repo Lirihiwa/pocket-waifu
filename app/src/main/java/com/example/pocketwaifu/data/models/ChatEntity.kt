@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = ChatEntity.TABLE)
-class ChatEntity(
+data class ChatEntity(
 
     @PrimaryKey(autoGenerate = true)
         val id: Int = 0,
@@ -17,7 +17,6 @@ class ChatEntity(
         val isUser: Boolean,
     @ColumnInfo(name = "creation_time")
         val timestamp: Long = System.currentTimeMillis(),
-
 ){
     companion object {
         const val TABLE = "messages"

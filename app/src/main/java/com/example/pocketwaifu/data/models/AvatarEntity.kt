@@ -15,9 +15,10 @@ data class AvatarEntity(
         val avatarName: String = "NoName",
     @ColumnInfo(name = "avatar_description")
         val description: String,
+    @ColumnInfo(name = "prompt_content")
+        val prompt: String = "",
     @ColumnInfo(name = "image_path")
         val imagePath: String,
-
 ){
     companion object {
         const val TABLE = "avatars"
