@@ -14,6 +14,10 @@ class AvatarRepositoryImpl(
         return dao.getAllAvatars()
     }
 
+    override suspend fun getAvatarById(avatarId: Int): AvatarEntity {
+        return dao.getAvatarById(avatarId)
+    }
+
     override suspend fun initializeDatabase() {
         val avatarsCount = dao.getAvatarsCount()
 

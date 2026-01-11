@@ -13,8 +13,8 @@ interface ChatDAO {
     suspend fun insertMessage(message: ChatEntity)
 
     @Query("SELECT * FROM ${ChatEntity.TABLE} WHERE avatar_name = :avatarId ORDER BY creation_time DESC")
-    fun getAllMessagesForAvatar(avatarId: Long): Flow<List<ChatEntity>>
+    fun getAllMessagesForAvatar(avatarId: Int): Flow<List<ChatEntity>>
 
     @Query("SELECT * FROM ${ChatEntity.TABLE} WHERE avatar_name = :avatarId ORDER BY creation_time DESC LIMIT :limit")
-    suspend fun getLastMessages(avatarId: Long, limit: Int): List<ChatEntity>
+    suspend fun getLastMessages(avatarId: Int, limit: Int): List<ChatEntity>
 }

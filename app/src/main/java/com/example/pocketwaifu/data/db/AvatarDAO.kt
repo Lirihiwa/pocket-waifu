@@ -11,12 +11,14 @@ import kotlinx.coroutines.flow.Flow
 interface AvatarDAO {
 
     @Query("SELECT COUNT(*) FROM ${AvatarEntity.TABLE}")
-    fun getAvatarsCount() : Int
+    suspend fun getAvatarsCount() : Int
 
     @Query("SELECT * FROM ${AvatarEntity.TABLE}")
     fun getAllAvatars() : Flow<List<AvatarEntity>>
 
+    @Query("SELECT * FROM ${AvatarEntity.TABLE} WHERE id = :avatarId")
+    suspend fun getAvatarById(avatarId: Int) : AvatarEntity
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBaseAvatars(avatars: List<AvatarEntity>)
-
 }

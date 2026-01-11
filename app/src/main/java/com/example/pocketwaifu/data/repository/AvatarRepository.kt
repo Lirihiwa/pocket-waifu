@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface AvatarRepository {
     fun getAllAvatars(): Flow<List<AvatarEntity>>
+    suspend fun getAvatarById(avatarId: Int) : AvatarEntity
     suspend fun initializeDatabase()
 }

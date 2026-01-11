@@ -5,7 +5,6 @@ import com.example.pocketwaifu.data.models.SendMessageResult
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
-    suspend fun sendMessage(message: ChatEntity, promptText: String) : SendMessageResult;
-
-    fun getAllMessagesForAvatar(avatarId: Long) : Flow<List<ChatEntity>>
+    suspend fun sendMessage(message: ChatEntity, promptText: String) : SendMessageResult
+    fun getAllMessagesForAvatar(avatarId: Int) : Flow<List<ChatEntity>>
 }

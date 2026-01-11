@@ -5,11 +5,11 @@ import com.example.pocketwaifu.data.repository.ChatRepository
 import kotlinx.coroutines.flow.Flow
 
 interface GetAllMessagesForAvatarUseCase {
-    operator fun invoke(avatarId: Long) : Flow<List<ChatEntity>>
+    operator fun invoke(avatarId: Int) : Flow<List<ChatEntity>>
 }
 
 
 class GetAllMessagesForAvatarUseCaseImpl(val repository: ChatRepository) : GetAllMessagesForAvatarUseCase {
-    override fun invoke(avatarId: Long) : Flow<List<ChatEntity>> =
+    override fun invoke(avatarId: Int) : Flow<List<ChatEntity>> =
         repository.getAllMessagesForAvatar(avatarId)
 }

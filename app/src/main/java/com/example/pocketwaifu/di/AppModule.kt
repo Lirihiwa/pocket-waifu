@@ -13,8 +13,12 @@ import com.example.pocketwaifu.domain.GetAllAvatarsUseCase
 import com.example.pocketwaifu.domain.GetAllAvatarsUseCaseImpl
 import com.example.pocketwaifu.domain.GetAllMessagesForAvatarUseCase
 import com.example.pocketwaifu.domain.GetAllMessagesForAvatarUseCaseImpl
+import com.example.pocketwaifu.domain.GetAvatarByIdUseCase
+import com.example.pocketwaifu.domain.GetAvatarByIdUseCaseImpl
 import com.example.pocketwaifu.domain.SendMessageUseCase
 import com.example.pocketwaifu.domain.SendMessageUseCaseImpl
+import com.example.pocketwaifu.presenter.chat.SpeechToTextManager
+import com.example.pocketwaifu.presenter.chat.SpeechToTextManagerImpl
 import com.example.pocketwaifu.presenter.main.MainViewModel
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
@@ -65,6 +69,7 @@ val appModule = module {
     }
 
     single<PromptService> { PromptServiceImpl() }
+    single<SpeechToTextManager> { SpeechToTextManagerImpl(androidContext()) }
 
     single {get<AppDatabase>().chatDao }
     single {get<AppDatabase>().avatarDao }
@@ -73,6 +78,7 @@ val appModule = module {
     single<ChatRepository> { ChatRepositoryImpl(get(), get(), get(), get())}
 
     single<GetAllAvatarsUseCase> { GetAllAvatarsUseCaseImpl(get()) }
+    single<GetAvatarByIdUseCase> { GetAvatarByIdUseCaseImpl(get()) }
     single<GetAllMessagesForAvatarUseCase> { GetAllMessagesForAvatarUseCaseImpl(get()) }
     single<SendMessageUseCase> { SendMessageUseCaseImpl(get()) }
 

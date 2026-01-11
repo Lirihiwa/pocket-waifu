@@ -69,7 +69,7 @@ class ChatRepositoryImpl(
         )
     }
 
-    override fun getAllMessagesForAvatar(avatarId: Long): Flow<List<ChatEntity>> {
+    override fun getAllMessagesForAvatar(avatarId: Int): Flow<List<ChatEntity>> {
         return dao.getAllMessagesForAvatar(avatarId)
     }
 }

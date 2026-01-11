@@ -20,18 +20,9 @@ class MainViewModel(
         get() = _avatars
 
     init {
-        initData()
-        getAllAvatars()
-    }
-
-    fun initData() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.initializeDatabase()
-        }
-    }
 
-    fun getAllAvatars() {
-        viewModelScope.launch(Dispatchers.IO) {
             getAllAvatarsUseCase().collect { list ->
                 _avatars.value = list
             }
