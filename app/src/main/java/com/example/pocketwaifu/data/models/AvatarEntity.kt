@@ -17,8 +17,18 @@ data class AvatarEntity(
         val description: String,
     @ColumnInfo(name = "prompt_content")
         val prompt: String = "",
-    @ColumnInfo(name = "image_path")
-        val imagePath: String,
+    @ColumnInfo(name = "image_of_icon_path")
+        val imageOfIconPath: String = "",
+    @ColumnInfo(name = "image_of_neutral_path")
+        val imageOfNeutralPath: String = "",
+    @ColumnInfo(name = "image_of_joy_path")
+        val imageOfJoyPath: String = "",
+    @ColumnInfo(name = "image_of_anger_path")
+        val imageOfAngerPath: String = "",
+    @ColumnInfo(name = "image_of_love_path")
+        val imageOfLovePath: String = "",
+    @ColumnInfo(name = "image_of_fear_path")
+        val imageOfFearPath: String = "",
 ) {
     companion object {
         const val TABLE = "avatars"

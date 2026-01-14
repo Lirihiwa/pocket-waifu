@@ -14,6 +14,8 @@ class PromptServiceImpl : PromptService {
               "text": "текст твоего ответа",
               "emotion": "название эмоции (joy, anger, love, fear, neutral)"
             }
+            
+            снизу предоставлена история сообщений:
         """.trimIndent()
     }
 }

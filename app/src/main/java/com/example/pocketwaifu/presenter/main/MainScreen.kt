@@ -98,7 +98,7 @@ fun AvatarItem(avatar: AvatarEntity) {
             }
 
             AsyncImage(
-                model = "file:///android_asset/${avatar.imagePath}",
+                model = "file:///android_asset/${avatar.imageOfIconPath}",
                 contentDescription = "Avatar portrait",
                 modifier = Modifier
                     .size(90.dp)
@@ -116,14 +116,12 @@ fun MainScreenPreview() {
         AvatarEntity(
             id = 1,
             avatarName = "Короне ",
-            description = "Описание какое то.",
-            imagePath = ""
+            description = "Описание какое то."
         ),
         AvatarEntity(
             id = 2,
             avatarName = "Мику",
-            description = "ВВАВАЫМЫМЛЬЫЛМТЖДЫАТМЖДОЫТАДМТ.",
-            imagePath = ""
+            description = "ВВАВАЫМЫМЛЬЫЛМТЖДЫАТМЖДОЫТАДМТ."
         )
     )
 
