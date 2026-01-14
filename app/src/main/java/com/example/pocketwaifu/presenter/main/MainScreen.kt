@@ -1,5 +1,7 @@
 package com.example.pocketwaifu.presenter.main
 
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,28 +24,50 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.pocketwaifu.data.models.AvatarEntity
+import com.example.pocketwaifu.services.waifuoverlay.WaifuOverlayService
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MainScreen() {
+    val context = LocalContext.current
     val viewModel: MainViewModel = koinViewModel()
     val avatarList by viewModel.avatars.collectAsStateWithLifecycle()
 
     MainScreenContent(
         avatars = avatarList,
+        onAvatarClick = { avatar ->
+
+            if (!Settings.canDrawOverlays(context)) {
+
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    "package:${context.packageName}".toUri()
+                )
+                context.startActivity(intent)
+            } else {
+
+                val intent = Intent(context, WaifuOverlayService::class.java).apply {
+                    putExtra("AVATAR_ID", avatar.id)
+                }
+                context.startService(intent)
+            }
+        }
     )
 }
 
 @Composable
 fun MainScreenContent(
     avatars: List<AvatarEntity>,
+    onAvatarClick: (AvatarEntity) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -51,14 +75,21 @@ fun MainScreenContent(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(items = avatars, key = { it.id }) { avatar ->
-            AvatarItem(avatar = avatar)
+            AvatarItem(
+                avatar = avatar,
+                onClick = { onAvatarClick(avatar) }
+            )
         }
     }
 }
 
 @Composable
-fun AvatarItem(avatar: AvatarEntity) {
+fun AvatarItem(
+    avatar: AvatarEntity,
+    onClick: () -> Unit = {}
+) {
     Card(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp),
@@ -127,5 +158,6 @@ fun MainScreenPreview() {
 
     MainScreenContent(
         avatars = mockAvatars,
+        onAvatarClick = {}
     )
 }

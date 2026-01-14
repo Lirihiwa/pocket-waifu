@@ -20,6 +20,7 @@ import com.example.pocketwaifu.domain.SendMessageUseCaseImpl
 import com.example.pocketwaifu.presenter.chat.SpeechToTextManager
 import com.example.pocketwaifu.presenter.chat.SpeechToTextManagerImpl
 import com.example.pocketwaifu.presenter.main.MainViewModel
+import com.example.pocketwaifu.presenter.overlay.OverlayViewModel
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -83,4 +84,11 @@ val appModule = module {
     single<SendMessageUseCase> { SendMessageUseCaseImpl(get()) }
 
     viewModel { MainViewModel(get(), get()) }
+    viewModel { (avatarId: Int) -> OverlayViewModel(
+        avatarId = avatarId,
+        getAllMessagesForAvatarUseCase = get(),
+        getAvatarByIdUseCase = get(),
+        sendMessageUseCase = get(),
+        repository = get(),
+    ) }
 }
