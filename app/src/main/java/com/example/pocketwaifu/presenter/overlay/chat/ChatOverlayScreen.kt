@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -44,12 +45,26 @@ fun ChatOverlayScreen(
         parameters = { parametersOf(avatarId) }
     )
 
+    val scale by overlayViewModel.chatScale.collectAsState()
+    val transparency by overlayViewModel.transparency.collectAsState()
+
     val messageList by overlayViewModel.messages.collectAsStateWithLifecycle()
+
+    val baseWidth = 180.dp
+    val baseHeight = 280.dp
+
+    val dynamicWidth = baseWidth * scale
+    val dynamicHeight = baseHeight * scale
 
     Column(
         modifier = Modifier
-            .width(180.dp)
-            .height(280.dp)
+            .graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
+                alpha = transparency,
+            )
+            .width(dynamicWidth)
+            .height(dynamicHeight)
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
                     change.consume()
@@ -58,41 +73,9 @@ fun ChatOverlayScreen(
             },
     ) {
 
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(24.dp),
-            shape = RoundedCornerShape(
-                topStartPercent = 50,
-                topEndPercent = 50,
-                bottomEndPercent = 0,
-                bottomStartPercent = 0
-            ),
-        ) {
-
-            Row(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-
-                IconButton(
-                    modifier = Modifier
-                        .fillMaxHeight(),
-                    onClick = onClose
-                ) {
-
-                    Icon(
-                        painter = painterResource(R.drawable.close),
-                        contentDescription = "Закрыть",
-                        tint = Color.Black,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-            }
-        }
+        TopNavBar(
+            onClose = onClose
+        )
 
         Column(
             modifier = Modifier

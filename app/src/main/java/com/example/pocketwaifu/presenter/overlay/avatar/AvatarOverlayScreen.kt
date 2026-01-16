@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -38,11 +39,11 @@ fun AvatarOverlayScreen(
     )
 
     val avatar by overlayViewModel.avatar.collectAsState()
+    val scale by overlayViewModel.avatarScale.collectAsState()
+    val transparency by overlayViewModel.transparency.collectAsState()
 
     val emotion by overlayViewModel.emotion.collectAsState()
-
     var isMenuTabExpanded by remember { mutableStateOf(false) }
-
     val context = LocalContext.current
 
     val getEmotionsPath = when(emotion) {
@@ -53,6 +54,12 @@ fun AvatarOverlayScreen(
         Emotions.NEUTRAL -> avatar.imageOfNeutralPath
     }
 
+    val baseWidth = 218.dp
+    val baseHeight = 340.dp
+
+    val dynamicWidth = baseWidth * scale
+    val dynamicHeight = baseHeight * scale
+
     Column(
         modifier = Modifier
             .clickable(
@@ -61,8 +68,11 @@ fun AvatarOverlayScreen(
             ) {
                 isMenuTabExpanded = !isMenuTabExpanded
             }
-            .width(218.dp)
-            .height(340.dp)
+            .graphicsLayer(
+                alpha = transparency,
+            )
+            .width(dynamicWidth)
+            .height(dynamicHeight)
             .wrapContentHeight()
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
@@ -81,6 +91,12 @@ fun AvatarOverlayScreen(
                 val intent = Intent(context, OverlayService::class.java).apply {
                     action = OverlayService.ACTION_CHAT_TOGGLE
                     putExtra(OverlayService.INTENT_EXTRA_AVATAR_ID, avatarId)
+                }
+                context.startService(intent)
+            },
+            onSettingsClick = {
+                val intent = Intent(context, OverlayService::class.java).apply {
+                    action = OverlayService.ACTION_SETTINGS_TOGGLE
                 }
                 context.startService(intent)
             },

@@ -13,6 +13,7 @@ import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.example.pocketwaifu.presenter.overlay.avatar.AvatarOverlayScreen
 import com.example.pocketwaifu.presenter.overlay.chat.ChatOverlayScreen
+import com.example.pocketwaifu.presenter.overlay.settings.SettingsOverlayScreen
 import kotlin.math.roundToInt
 
 class OverlayService : Service() {
@@ -25,6 +26,9 @@ class OverlayService : Service() {
 
     private var chatOverlayView: ComposeView? = null
     private var chatParams: WindowManager.LayoutParams? = null
+
+    private var settingsOverlayView: ComposeView? = null
+    private var settingsParams: WindowManager.LayoutParams? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -45,21 +49,34 @@ class OverlayService : Service() {
         }
     }
 
+    private fun toggleSettings() {
+
+        if (settingsOverlayView == null) {
+            openSettingsView()
+        } else {
+            closeSettingsView()
+        }
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        val avatarId = intent?.getIntExtra(INTENT_EXTRA_AVATAR_ID, -1) ?: -1
+        when (intent?.action) {
+            ACTION_CHAT_TOGGLE -> {
 
-        if (intent?.action == ACTION_CHAT_TOGGLE) {
+                val avatarId = intent.getIntExtra(INTENT_EXTRA_AVATAR_ID, -1) ?: -1
+                toggleChat(avatarId)
+                return START_STICKY
+            }
+            ACTION_SETTINGS_TOGGLE -> {
 
-            toggleChat(avatarId)
-            return START_STICKY
-        }
-
-        if (avatarId < 0) {
-            stopSelf()
+                toggleSettings()
+                return START_STICKY
+            }
         }
 
         if (avatarOverlayView == null) {
+
+            val avatarId = intent?.getIntExtra(INTENT_EXTRA_AVATAR_ID, -1) ?: -1
             createAvatarView(avatarId)
         }
 
@@ -118,6 +135,13 @@ class OverlayService : Service() {
         windowManager.updateViewLayout(chatOverlayView, chatParams)
     }
 
+    private fun updateSettingsViewPosition(dx: Float, dy: Float, ) {
+
+        settingsParams?.x -= dx.roundToInt()
+        settingsParams?.y -= dy.roundToInt()
+        windowManager.updateViewLayout(settingsOverlayView, settingsParams)
+    }
+
     private fun openChatView(avatarId: Int) {
 
         chatParams = WindowManager.LayoutParams(
@@ -152,6 +176,38 @@ class OverlayService : Service() {
         windowManager.addView(chatOverlayView, chatParams)
     }
 
+    private fun openSettingsView() {
+
+        settingsParams = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                    WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+            PixelFormat.TRANSLUCENT,
+        )
+
+        settingsParams?.gravity = Gravity.BOTTOM or Gravity.END
+        settingsParams?.x = avatarParams.x + 100
+        settingsParams?.y = avatarParams.y + 100
+
+        settingsOverlayView = ComposeView(this).apply {
+
+            setViewTreeLifecycleOwner(lifecycleOwner)
+            setViewTreeSavedStateRegistryOwner(lifecycleOwner)
+            setViewTreeViewModelStoreOwner(lifecycleOwner)
+
+            setContent {
+                SettingsOverlayScreen (
+                    onClose = { closeSettingsView() },
+                    onDrag = { dx, dy ->
+                        updateSettingsViewPosition(dx, dy)
+                    }
+                )
+            }
+        }
+        windowManager.addView(settingsOverlayView, settingsParams)
+    }
     private fun closeChatView() {
 
         if (chatOverlayView != null) {
@@ -162,11 +218,22 @@ class OverlayService : Service() {
         }
     }
 
+    private fun closeSettingsView() {
+
+        if (settingsOverlayView != null) {
+
+            windowManager.removeView(settingsOverlayView)
+            settingsOverlayView = null
+            settingsParams = null
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
         if (avatarOverlayView != null) {
             closeChatView()
+            closeSettingsView()
             windowManager.removeView(avatarOverlayView)
             avatarOverlayView = null
         }
@@ -176,6 +243,8 @@ class OverlayService : Service() {
 
     companion object {
         const val ACTION_CHAT_TOGGLE = "ACTION_TOGGLE_CHAT"
+
+        const val ACTION_SETTINGS_TOGGLE = "ACTION_TOGGLE_SETTINGS"
         const val INTENT_EXTRA_AVATAR_ID = "AVATAR_ID"
     }
 }

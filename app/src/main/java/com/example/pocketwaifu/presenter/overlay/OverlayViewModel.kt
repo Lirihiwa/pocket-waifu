@@ -36,6 +36,16 @@ class OverlayViewModel(
     val avatar: StateFlow<AvatarEntity>
         get() = _avatar.asStateFlow()
 
+
+    private val _avatarScale = MutableStateFlow(1f)
+    val avatarScale = _avatarScale.asStateFlow()
+
+    private val _chatScale = MutableStateFlow(1f)
+    val chatScale = _chatScale.asStateFlow()
+
+    private val _transparency = MutableStateFlow(1f)
+    val transparency = _transparency.asStateFlow()
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
 
@@ -72,5 +82,20 @@ class OverlayViewModel(
                 Log.e("SEND_MESSAGE_EXCEPTION" ,e.toString())
             }
         }
+    }
+
+    fun setAvatarScale(scale: Float) {
+
+        _avatarScale.value = scale
+    }
+
+    fun setChatScale(scale: Float) {
+
+        _chatScale.value = scale
+    }
+
+    fun setTransparency(scale: Float) {
+
+        _transparency.value = scale
     }
 }
