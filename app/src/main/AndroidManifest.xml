@@ -35,7 +35,7 @@
         </activity>
 
         <service
-            android:name=".services.waifuoverlay.WaifuOverlayService"
+            android:name=".services.overlay.OverlayService"
             android:enabled="true"
             android:exported="false" />
 

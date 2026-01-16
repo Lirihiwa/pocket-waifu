@@ -1,11 +1,11 @@
 package com.example.pocketwaifu.presenter.overlay
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pocketwaifu.data.models.AvatarEntity
 import com.example.pocketwaifu.data.models.ChatEntity
-import com.example.pocketwaifu.data.repository.AvatarRepository
+import com.example.pocketwaifu.data.models.Emotions
 import com.example.pocketwaifu.domain.GetAllMessagesForAvatarUseCase
 import com.example.pocketwaifu.domain.GetAvatarByIdUseCase
 import com.example.pocketwaifu.domain.SendMessageUseCase
@@ -17,18 +17,23 @@ import kotlinx.coroutines.launch
 
 class OverlayViewModel(
     private val avatarId: Int,
-    val getAllMessagesForAvatarUseCase: GetAllMessagesForAvatarUseCase,
-    val getAvatarByIdUseCase: GetAvatarByIdUseCase,
-    val sendMessageUseCase: SendMessageUseCase,
-    val repository: AvatarRepository
+    private val getAllMessagesForAvatarUseCase: GetAllMessagesForAvatarUseCase,
+    private val getAvatarByIdUseCase: GetAvatarByIdUseCase,
+    private val sendMessageUseCase: SendMessageUseCase,
 ) : ViewModel() {
 
     private val _messages = MutableStateFlow<List<ChatEntity>>(emptyList())
     val messages: StateFlow<List<ChatEntity>>
         get() = _messages.asStateFlow()
 
-    private val _avatar = MutableStateFlow<AvatarEntity?>(null)
-    val avatar: StateFlow<AvatarEntity?>
+    private val _emotion = MutableStateFlow<Emotions>(Emotions.NEUTRAL)
+    val emotion: StateFlow<Emotions>
+        get() = _emotion.asStateFlow()
+
+    private val _avatar = MutableStateFlow<AvatarEntity>(AvatarEntity(
+        description = "",
+    ))
+    val avatar: StateFlow<AvatarEntity>
         get() = _avatar.asStateFlow()
 
     init {
@@ -43,6 +48,29 @@ class OverlayViewModel(
 
             val loadedAvatar = getAvatarByIdUseCase(avatarId)
             _avatar.value = loadedAvatar
+        }
+    }
+
+    fun sendMessage(
+        text: String,
+    ) {
+
+        viewModelScope.launch {
+
+            try {
+                val result = sendMessageUseCase(
+                    message = ChatEntity(
+                        avatarId = avatar.value.id,
+                        text = text,
+                        isUser = true,
+                    ),
+                    promptText = avatar.value.prompt
+                )
+
+                _emotion.value = result.emotion
+            } catch (e: Exception) {
+                Log.e("SEND_MESSAGE_EXCEPTION" ,e.toString())
+            }
         }
     }
 }

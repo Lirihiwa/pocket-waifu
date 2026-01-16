@@ -89,6 +89,5 @@ val appModule = module {
         getAllMessagesForAvatarUseCase = get(),
         getAvatarByIdUseCase = get(),
         sendMessageUseCase = get(),
-        repository = get(),
     ) }
 }

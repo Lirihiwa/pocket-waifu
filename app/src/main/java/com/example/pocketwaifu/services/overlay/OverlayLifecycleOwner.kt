@@ -1,4 +1,4 @@
-package com.example.pocketwaifu.services.waifuoverlay
+package com.example.pocketwaifu.services.overlay
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
@@ -8,10 +8,10 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 
-class WaifuOverlayLifecycleOwner : SavedStateRegistryOwner, ViewModelStoreOwner {
+class OverlayLifecycleOwner : SavedStateRegistryOwner, ViewModelStoreOwner {
 
     private val lifecycleRegistry = LifecycleRegistry(this)
-    private val savedStateRegistryController = SavedStateRegistryController.create(this)
+    private val savedStateRegistryController = SavedStateRegistryController.Companion.create(this)
     private val store = ViewModelStore()
 
     override val lifecycle: Lifecycle get() = lifecycleRegistry

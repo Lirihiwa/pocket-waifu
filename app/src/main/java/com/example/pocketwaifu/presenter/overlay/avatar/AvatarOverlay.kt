@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
 @Composable
-fun WaifuOverlay(
+fun AvatarOverlay(
     imagePath: String,
 ) {
 
@@ -19,6 +19,7 @@ fun WaifuOverlay(
             .fillMaxWidth()
             .height(300.dp)
     ) {
+
         AsyncImage(
             model = "file:///android_asset/${imagePath}",
             contentDescription = "Avatar portrait",

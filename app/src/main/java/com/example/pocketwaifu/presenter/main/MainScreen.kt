@@ -33,7 +33,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.pocketwaifu.data.models.AvatarEntity
-import com.example.pocketwaifu.services.waifuoverlay.WaifuOverlayService
+import com.example.pocketwaifu.services.overlay.OverlayService
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -55,8 +55,8 @@ fun MainScreen() {
                 context.startActivity(intent)
             } else {
 
-                val intent = Intent(context, WaifuOverlayService::class.java).apply {
-                    putExtra("AVATAR_ID", avatar.id)
+                val intent = Intent(context, OverlayService::class.java).apply {
+                    putExtra(OverlayService.INTENT_EXTRA_AVATAR_ID, avatar.id)
                 }
                 context.startService(intent)
             }
