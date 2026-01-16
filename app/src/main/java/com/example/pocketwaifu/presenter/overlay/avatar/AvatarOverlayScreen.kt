@@ -1,6 +1,11 @@
 package com.example.pocketwaifu.presenter.overlay.avatar
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -20,6 +25,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.example.pocketwaifu.data.models.Emotions
 
 import com.example.pocketwaifu.presenter.overlay.OverlayViewModel
@@ -41,6 +48,7 @@ fun AvatarOverlayScreen(
     val avatar by overlayViewModel.avatar.collectAsState()
     val scale by overlayViewModel.avatarScale.collectAsState()
     val transparency by overlayViewModel.transparency.collectAsState()
+    val isVoiceStarted by overlayViewModel.isVoiceRecording.collectAsState()
 
     val emotion by overlayViewModel.emotion.collectAsState()
     var isMenuTabExpanded by remember { mutableStateOf(false) }
@@ -100,9 +108,28 @@ fun AvatarOverlayScreen(
                 }
                 context.startService(intent)
             },
+            onMicClick = {
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.RECORD_AUDIO
+                ) == PackageManager.PERMISSION_GRANTED)
+                {
+                    overlayViewModel.toggleMicrophone()
+                } else {
+
+                    Toast.makeText(context, "Предоставьте разрешение 'Микрофон': Разрешения -> Микрофон", Toast.LENGTH_LONG).show()
+
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", context.packageName, null)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    context.startActivity(intent)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             expanded = isMenuTabExpanded,
+            isMicActive = isVoiceStarted,
         )
     }
 }

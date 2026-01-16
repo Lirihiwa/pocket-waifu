@@ -9,6 +9,7 @@ import com.example.pocketwaifu.data.models.Emotions
 import com.example.pocketwaifu.domain.GetAllMessagesForAvatarUseCase
 import com.example.pocketwaifu.domain.GetAvatarByIdUseCase
 import com.example.pocketwaifu.domain.SendMessageUseCase
+import com.example.pocketwaifu.presenter.chat.SpeechToTextManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +21,7 @@ class OverlayViewModel(
     private val getAllMessagesForAvatarUseCase: GetAllMessagesForAvatarUseCase,
     private val getAvatarByIdUseCase: GetAvatarByIdUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
+    private val speechToTextManager: SpeechToTextManager,
 ) : ViewModel() {
 
     private val _messages = MutableStateFlow<List<ChatEntity>>(emptyList())
@@ -35,6 +37,11 @@ class OverlayViewModel(
     ))
     val avatar: StateFlow<AvatarEntity>
         get() = _avatar.asStateFlow()
+
+    private val _isVoiceRecording = MutableStateFlow(false)
+    val isVoiceRecording: StateFlow<Boolean> = _isVoiceRecording.asStateFlow()
+
+    private val _isResponding = MutableStateFlow(false)
 
 
     private val _avatarScale = MutableStateFlow(1f)
@@ -97,5 +104,40 @@ class OverlayViewModel(
     fun setTransparency(scale: Float) {
 
         _transparency.value = scale
+    }
+
+    fun toggleMicrophone() {
+        if (_isVoiceRecording.value) {
+            stopVoice()
+        } else {
+            startVoice()
+        }
+    }
+
+    private fun startVoice() {
+
+        _isVoiceRecording.value = true
+
+        viewModelScope.launch(Dispatchers.Main) {
+            speechToTextManager.startListening(
+                onResult = { text ->
+                    if (text.isNotBlank()) {
+                        sendMessage(text)
+                    }
+                    _isVoiceRecording.value = false
+                },
+                onError = { errorMessage ->
+                    Log.e("SpeechError", errorMessage)
+                    _isVoiceRecording.value = false
+                }
+            )
+        }
+    }
+
+    private fun stopVoice() {
+
+        viewModelScope.launch(Dispatchers.Main) {
+            speechToTextManager.stopListening()
+        }
     }
 }

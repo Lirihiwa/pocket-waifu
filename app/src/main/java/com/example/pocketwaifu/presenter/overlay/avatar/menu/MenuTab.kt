@@ -26,6 +26,7 @@ fun MenuTab(
     onChatClick: () -> Unit = {},
     onMicClick: () -> Unit = {},
     onCloseClick: () -> Unit = {},
+    isMicActive: Boolean,
     expanded: Boolean,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
 ) {
@@ -81,7 +82,7 @@ fun MenuTab(
 
                 MenuTabItem(
                     onCloseClick = onMicClick,
-                    resourceId = R.drawable.mic,
+                    resourceId = if (isMicActive) R.drawable.mic else R.drawable.mic_off,
                     contentDescription = "Микрофон",
                     enabled = expanded,
                 )

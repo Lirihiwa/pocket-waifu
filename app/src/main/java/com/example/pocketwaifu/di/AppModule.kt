@@ -89,5 +89,6 @@ val appModule = module {
         getAllMessagesForAvatarUseCase = get(),
         getAvatarByIdUseCase = get(),
         sendMessageUseCase = get(),
+        speechToTextManager = get(),
     ) }
 }
