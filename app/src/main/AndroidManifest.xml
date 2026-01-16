@@ -8,7 +8,10 @@
 
     <queries>
         <intent>
-            <action android:name="android.intent.action.RECOGNITION_SERVICE" />
+            <action android:name="android.view.InputMethod" />
+        </intent>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
         </intent>
     </queries>
 
